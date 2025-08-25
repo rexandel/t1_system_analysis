@@ -1,0 +1,509 @@
+{
+    "openapi": "3.1.1",
+    "info": {
+        "title": "Бронирование отелей",
+        "description": "Бронирование отелей, глэмпингов и аппартаментов",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "https://api.hotels.com/v1",
+            "description": "Рабочий сервер"
+        },
+        {
+            "url": "https://test-api.hotels.com",
+            "description": "Тестовый сервер"
+        }
+    ],
+    "components": {
+        "parameters": {
+            "hotelIDInPath": {
+                "name": "hotelID",
+                "description": "Идентификатор выбранного отеля",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 1,
+                    "default": 1
+                }
+            },
+            "hotelIDInQuery": {
+                "name": "hotelID",
+                "description": "Идентификатор выбранного отеля",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 1
+                }
+            },
+            "roomIDInPath": {
+                "name": "roomID",
+                "description": "Идентификатор выбранного номера в отеле",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 1,
+                    "default": 1
+                }
+            },
+            "roomIDInQuery": {
+                "name": "roomID",
+                "description": "Идентификатор выбранного номера в отеле",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 1
+                }
+            },
+            "orderIDInPath": {
+                "name": "orderID",
+                "description": "Идентификатор выбранного бронирования номера",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 1,
+                    "default": 1
+                }
+            },
+            "orderIDInQuery": {
+                "name": "orderID",
+                "description": "Идентификатор выбранного бронирования номера",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 1
+                }
+            },
+            "offsetParam": {
+                "name": "offset",
+                "description": "Номер первого элемента на странице",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 0
+                }
+            },
+            "limitParam": {
+                "name": "limit",
+                "description": "Количество элементов на странице",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "integer",
+                    "minimum": 10,
+                    "maximum": 100,
+                    "default": 20
+                }
+            }
+        },
+        "schemas": {
+            "Hotel": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "name",
+                    "image",
+                    "description",
+                    "feedback"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 1,
+                        "default": 1,
+                        "description": "Идентификатор отеля"
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength": 10,
+                        "maxLength": 200,
+                        "description": "Полное наименование отеля"
+                    },
+                    "image": {
+                        "type": "string",
+                        "minLength": 5,
+                        "maxLength": 1000,
+                        "description": "Изображение отеля (URL)"
+                    },
+                    "description": {
+                        "type": "string",
+                        "minLength": 100,
+                        "maxLength": 1000,
+                        "description": "Полное описание отеля"
+                    },
+                    "feedback": {
+                        "type": "string",
+                        "enum": [
+                            "Ниже ожидаемого",
+                            "Совпадает с ожиданием",
+                            "Выше ожидаемого"
+                        ],
+                        "description": "Обратная связь от гостей"
+                    },
+                    "rooms": {
+                        "type": "array",
+                        "minItems": 10,
+                        "maxItems": 200,
+                        "description": "Список доступных номеров"
+                    }
+                }
+            },
+            "Client": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "name",
+                    "surname",
+                    "patronymic",
+                    "passport",
+                    "phoneNumber"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 1,
+                        "description": "Идентификатор клиента"
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 50,
+                        "description": "Полное имя клиента"
+                    },
+                    "surname": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 100,
+                        "description": "Полная фамилия клиента"
+                    },
+                    "patronymic": {
+                        "type": "string",
+                        "minLength": 5,
+                        "maxLength": 100,
+                        "description": "Полное отчество клиента"
+                    },
+                    "passport": {
+                        "type": "string",
+                        "pattern": "^[0-9]{10}$",
+                        "description": "Серия и номер паспорта РФ клиента"
+                    },
+                    "phoneNumber": {
+                        "type": "string",
+                        "pattern": "^\\+7\\(\\d{3}\\)\\d{3}-\\d{2}-\\d{2}$",
+                        "description": "Номер телефона клиента"
+                    }
+                }
+            },
+            "Room": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "name",
+                    "isAvailable"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 1,
+                        "default": 1,
+                        "description": "Идентификатор номера отеля"
+                    },
+                    "name": {
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            {
+                                "type": "integer",
+                                "format": "int64",
+                                "minimum": 1
+                            }
+                        ],
+                        "description": "Наименование номера отеля"
+                    },
+                    "isAvailable": {
+                        "type": "boolean",
+                        "description": "Статус выбранного номера"
+                    }
+                }
+            },
+            "Order": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "hotelID",
+                    "roomID",
+                    "clientID",
+                    "dateTime"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 1,
+                        "default": 1,
+                        "description": "Идентификатор записи о бронировании номера в отеле"
+                    },
+                    "hotelID": {
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 1,
+                        "default": 1,
+                        "description": "Идентификатор отеля"
+                    },
+                    "roomID": {
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 1,
+                        "default": 1,
+                        "description": "Идентификатор номера в отеле"
+                    },
+                    "clientID": {
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 1,
+                        "default": 1,
+                        "description": "Идентификатор клиента"
+                    },
+                    "dateTime": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Дата и время выполнения бронирования"
+                    }
+                }
+            },
+            "Error": {
+                "type": "string",
+                "minLength": 10,
+                "maxLength": 500,
+                "description": "Текст сообщения об ошибке запроса"
+            }
+        }
+    },
+    "paths": {
+        "/hotels": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/offsetParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/limitParam"
+                    }
+                ],
+                "summary": "Просмотр полного списка отелей",
+                "description": "Возвращает полный список всех доступных для бронирования отелей",
+                "tags": [
+                    "Поиск отеля для бронирования номера"
+                ],
+                "operationId": "getHotels",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Hotel"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hotels/{hotelID}": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/hotelIDInPath"
+                    }
+                ],
+                "summary": "Получить информацию об определенном отеле",
+                "description": "Возвращает полную информацию об отеле по его уникальному идентификатору",
+                "operationId": "getHotelByID",
+                "tags": [
+                    "Просмотр информации по выбранному отелю"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Hotel"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/hotelIDInQuery"
+                    }
+                ],
+                "summary": "Получить список номеров",
+                "description": "Возвращает полный список номеров с подробной информацией о каждом из них",
+                "operationId": "getRoom",
+                "tags": [
+                    "Поиск номера в отеле для бронирования"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Order"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/{roomID}": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/roomIDInPath"
+                    },
+                    {
+                        "$ref": "#/components/parameters/hotelIDInQuery"
+                    }
+                ],
+                "summary": "Получить информацию об определенном номере",
+                "description": "Возвращает полную информацию о номере по его уникальному идентификатору",
+                "operationId": "getRoomByID",
+                "tags": [
+                    "Просмотр информации по определенному номеру"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Order"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/orders": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/hotelIDInQuery"
+                    }
+                ],
+                "summary": "Получить список бронирований",
+                "description": "Возвращает полный список всех бронирований",
+                "operationId": "getOrders",
+                "tags": [
+                    "Бронирование номера в отеле"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Order"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Забронировать номер",
+                "description": "Забронировать выбранный номер в отеле",
+                "tags": [
+                    "Бронирование номера в отеле"
+                ],
+                "operationId": "createOrder",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Order"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/orders/{orderID}": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/orderIDInPath"
+                    }
+                ],
+                "summary": "Получить информацию об определенном бронировании",
+                "description": "Возвращает полную информацию о конкретном бронировании по его уникальному идентификатору",
+                "operationId": "getOrderByID",
+                "tags": [
+                    "Просмотр информации по выбранному бронированию"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Order"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
