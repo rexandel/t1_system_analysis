@@ -17,7 +17,7 @@
     ],
     "components": {
         "parameters": {
-            "hotelIDInPath": {
+            "hotelID": {
                 "name": "hotelID",
                 "description": "Идентификатор выбранного отеля",
                 "in": "path",
@@ -29,18 +29,7 @@
                     "default": 1
                 }
             },
-            "hotelIDInQuery": {
-                "name": "hotelID",
-                "description": "Идентификатор выбранного отеля",
-                "in": "query",
-                "required": false,
-                "schema": {
-                    "type": "integer",
-                    "format": "int64",
-                    "minimum": 1
-                }
-            },
-            "roomIDInPath": {
+            "roomID": {
                 "name": "roomID",
                 "description": "Идентификатор выбранного номера в отеле",
                 "in": "path",
@@ -52,18 +41,7 @@
                     "default": 1
                 }
             },
-            "roomIDInQuery": {
-                "name": "roomID",
-                "description": "Идентификатор выбранного номера в отеле",
-                "in": "query",
-                "required": false,
-                "schema": {
-                    "type": "integer",
-                    "format": "int64",
-                    "minimum": 1
-                }
-            },
-            "orderIDInPath": {
+            "orderID": {
                 "name": "orderID",
                 "description": "Идентификатор выбранного бронирования номера",
                 "in": "path",
@@ -75,18 +53,7 @@
                     "default": 1
                 }
             },
-            "orderIDInQuery": {
-                "name": "orderID",
-                "description": "Идентификатор выбранного бронирования номера",
-                "in": "query",
-                "required": false,
-                "schema": {
-                    "type": "integer",
-                    "format": "int64",
-                    "minimum": 1
-                }
-            },
-            "clientIDInPath": {
+            "clientID": {
                 "name": "clientID",
                 "description": "Идентификатор выбранного клиента",
                 "in": "path",
@@ -96,17 +63,6 @@
                     "format": "int64",
                     "minimum": 1,
                     "default": 1
-                }
-            },
-            "clientIDInQuery": {
-                "name": "clientID",
-                "description": "Идентификатор выбранного клиента",
-                "in": "query",
-                "required": false,
-                "schema": {
-                    "type": "integer",
-                    "format": "int64",
-                    "minimum": 1
                 }
             },
             "offsetParam": {
@@ -403,7 +359,7 @@
             "get": {
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/hotelIDInPath"
+                        "$ref": "#/components/parameters/hotelID"
                     }
                 ],
                 "summary": "Получить информацию об определенном отеле",
@@ -474,12 +430,6 @@
                     },
                     {
                         "$ref": "#/components/parameters/limitParam"
-                    },
-                    {
-                        "$ref": "#/components/parameters/hotelIDInQuery"
-                    },
-                    {
-                        "$ref": "#/components/parameters/clientIDInQuery"
                     }
                 ],
                 "summary": "Получить список номеров",
@@ -539,10 +489,7 @@
             "get": {
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/roomIDInPath"
-                    },
-                    {
-                        "$ref": "#/components/parameters/hotelIDInQuery"
+                        "$ref": "#/components/parameters/roomID"
                     }
                 ],
                 "summary": "Получить информацию об определенном номере",
@@ -613,12 +560,6 @@
                     },
                     {
                         "$ref": "#/components/parameters/limitParam"
-                    },
-                    {
-                        "$ref": "#/components/parameters/hotelIDInQuery"
-                    },
-                    {
-                        "$ref": "#/components/parameters/clientIDInQuery"
                     }
                 ],
                 "summary": "Получить список бронирований",
@@ -758,7 +699,7 @@
             "get": {
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/orderIDInPath"
+                        "$ref": "#/components/parameters/orderID"
                     }
                 ],
                 "summary": "Получить информацию об определенном бронировании",
@@ -958,7 +899,7 @@
             "get": {
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/clientIDInPath"
+                        "$ref": "#/components/parameters/clientID"
                     }
                 ],
                 "summary": "Получить информацию об определенном клиенте",
