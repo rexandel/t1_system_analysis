@@ -3,7 +3,7 @@
     "info": {
         "title": "Бронирование отелей",
         "description": "Бронирование отелей, глэмпингов и аппартаментов",
-        "version": "1.4.1"
+        "version": "1.4.2"
     },
     "servers": [
         {
@@ -563,7 +563,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Список номеров успешно получен",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -581,6 +581,22 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidLimit": {
+                                        "summary": "Некорректное значение limit",
+                                        "value": {
+                                            "message": "Параметр 'limit' должен быть числом от 10 до 100",
+                                            "errorCode": "INVALID_LIMIT_PARAMETER"
+                                        }
+                                    },
+                                    "invalidOffset": {
+                                        "summary": "Некорректное значение offset",
+                                        "value": {
+                                            "message": "Параметр 'offset' должен быть неотрицательным числом",
+                                            "errorCode": "INVALID_OFFSET_PARAMETER"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -591,6 +607,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -601,6 +626,22 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -623,7 +664,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Информация о номере успешно получена",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -638,6 +679,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidID": {
+                                        "summary": "Некорректный идентификатор номера",
+                                        "value": {
+                                            "message": "Идентификатор номера должен быть положительным числом",
+                                            "errorCode": "INVALID_ROOM_ID"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -648,6 +698,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "notFound": {
+                                        "summary": "Номер не существует",
+                                        "value": {
+                                            "message": "Номер с указанным ID не найден",
+                                            "errorCode": "ROOM_NOT_FOUND"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -658,6 +717,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -668,6 +736,22 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
                                 }
                             }
                         }
