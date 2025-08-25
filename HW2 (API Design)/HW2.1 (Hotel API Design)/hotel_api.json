@@ -151,7 +151,14 @@
                     "image": "https://example.com/images/hotel-prestige.jpg",
                     "description": "Роскошный пятизвездочный отель в самом сердце Москвы с видом на Красную площадь",
                     "feedback": "Выше ожидаемого",
-                    "rooms": [101, 102, 103, 206, 204, 202]
+                    "rooms": [
+                        101,
+                        102,
+                        103,
+                        206,
+                        204,
+                        202
+                    ]
                 }
             },
             "Room": {
@@ -342,7 +349,7 @@
                 "operationId": "getHotels",
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Список отелей успешно получен",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -360,6 +367,22 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidLimit": {
+                                        "summary": "Некорректное значение limit",
+                                        "value": {
+                                            "message": "Параметр 'limit' должен быть числом от 10 до 100",
+                                            "errorCode": "INVALID_LIMIT_PARAMETER"
+                                        }
+                                    },
+                                    "invalidOffset": {
+                                        "summary": "Некорректное значение offset",
+                                        "value": {
+                                            "message": "Параметр 'offset' должен быть неотрицательным числом",
+                                            "errorCode": "INVALID_OFFSET_PARAMETER"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -370,6 +393,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -380,6 +412,22 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -402,7 +450,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Информация об отеле успешно получена",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -417,6 +465,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidID": {
+                                        "summary": "Некорректный идентификатор отеля",
+                                        "value": {
+                                            "message": "Идентификатор отеля должен быть положительным числом",
+                                            "errorCode": "INVALID_HOTEL_ID"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -427,6 +484,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "notFound": {
+                                        "summary": "Отель не существует",
+                                        "value": {
+                                            "message": "Отель с указанным ID не найден",
+                                            "errorCode": "HOTEL_NOT_FOUND"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -437,6 +503,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -447,6 +522,22 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
                                 }
                             }
                         }
