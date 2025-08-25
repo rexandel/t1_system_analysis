@@ -3,7 +3,7 @@
     "info": {
         "title": "Бронирование отелей",
         "description": "Бронирование отелей, глэмпингов и аппартаментов",
-        "version": "1.3"
+        "version": "1.4.1"
     },
     "servers": [
         {
@@ -27,7 +27,8 @@
                     "format": "int64",
                     "minimum": 1,
                     "default": 1
-                }
+                },
+                "example": 75
             },
             "roomID": {
                 "name": "roomID",
@@ -39,7 +40,8 @@
                     "format": "int64",
                     "minimum": 1,
                     "default": 1
-                }
+                },
+                "example": 65
             },
             "orderID": {
                 "name": "orderID",
@@ -51,7 +53,8 @@
                     "format": "int64",
                     "minimum": 1,
                     "default": 1
-                }
+                },
+                "example": 435
             },
             "clientID": {
                 "name": "clientID",
@@ -63,7 +66,8 @@
                     "format": "int64",
                     "minimum": 1,
                     "default": 1
-                }
+                },
+                "example": 14
             },
             "offsetParam": {
                 "name": "offset",
@@ -140,6 +144,14 @@
                         "maxItems": 200,
                         "description": "Список доступных номеров"
                     }
+                },
+                "example": {
+                    "id": 412,
+                    "name": "Отель 'Престиж'",
+                    "image": "https://example.com/images/hotel-prestige.jpg",
+                    "description": "Роскошный пятизвездочный отель в самом сердце Москвы с видом на Красную площадь",
+                    "feedback": "Выше ожидаемого",
+                    "rooms": [101, 102, 103, 206, 204, 202]
                 }
             },
             "Room": {
@@ -183,6 +195,12 @@
                         "default": 1,
                         "description": "Идентификатор отеля"
                     }
+                },
+                "example": {
+                    "id": 615,
+                    "name": "Люкс с видом на собор",
+                    "isAvailable": true,
+                    "hotelID": 412
                 }
             },
             "Order": {
@@ -220,6 +238,12 @@
                         "format": "date-time",
                         "description": "Дата и время выполнения бронирования"
                     }
+                },
+                "example": {
+                    "id": 1521,
+                    "roomID": 615,
+                    "clientID": 412,
+                    "dateTime": "2025-01-15T14:00:00Z"
                 }
             },
             "Client": {
@@ -267,6 +291,14 @@
                         "pattern": "^\\+7\\(\\d{3}\\)\\d{3}-\\d{2}-\\d{2}$",
                         "description": "Номер телефона клиента"
                     }
+                },
+                "example": {
+                    "id": 362,
+                    "name": "Иван",
+                    "surname": "Иванов",
+                    "patronymic": "Иванович",
+                    "passport": "4510123456",
+                    "phoneNumber": "+7(495)123-45-67"
                 }
             },
             "Error": {
