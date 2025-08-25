@@ -3,7 +3,7 @@
     "info": {
         "title": "Бронирование отелей",
         "description": "Бронирование отелей, глэмпингов и аппартаментов",
-        "version": "1.4.3"
+        "version": "1.4.4"
     },
     "servers": [
         {
@@ -1170,7 +1170,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Список клиентов успешно получен",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1188,6 +1188,22 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidLimit": {
+                                        "summary": "Некорректное значение limit",
+                                        "value": {
+                                            "message": "Параметр 'limit' должен быть числом от 10 до 100",
+                                            "errorCode": "INVALID_LIMIT_PARAMETER"
+                                        }
+                                    },
+                                    "invalidOffset": {
+                                        "summary": "Некорректное значение offset",
+                                        "value": {
+                                            "message": "Параметр 'offset' должен быть неотрицательным числом",
+                                            "errorCode": "INVALID_OFFSET_PARAMETER"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1198,6 +1214,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1208,6 +1233,22 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1227,6 +1268,18 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/Client"
+                            },
+                            "examples": {
+                                "newClient": {
+                                    "summary": "Создание клиента",
+                                    "value": {
+                                        "name": "Иван",
+                                        "surname": "Иванов",
+                                        "patronymic": "Иванович",
+                                        "passport": "4510123456",
+                                        "phoneNumber": "+7(495)123-45-67"
+                                    }
+                                }
                             }
                         }
                     }
@@ -1238,6 +1291,19 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Client"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "summary": "Клиент создан",
+                                        "value": {
+                                            "id": 789,
+                                            "name": "Иван",
+                                            "surname": "Иванов",
+                                            "patronymic": "Иванович",
+                                            "passport": "4510123456",
+                                            "phoneNumber": "+7(495)123-45-67"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1248,6 +1314,29 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidPassport": {
+                                        "summary": "Некорректный формат паспорта",
+                                        "value": {
+                                            "message": "Паспорт должен содержать 10 цифр",
+                                            "errorCode": "INVALID_PASSPORT_FORMAT"
+                                        }
+                                    },
+                                    "invalidPhone": {
+                                        "summary": "Некорректный формат телефона",
+                                        "value": {
+                                            "message": "Телефон должен быть в формате +7(XXX)XXX-XX-XX",
+                                            "errorCode": "INVALID_PHONE_FORMAT"
+                                        }
+                                    },
+                                    "missingFields": {
+                                        "summary": "Отсутствуют обязательные поля",
+                                        "value": {
+                                            "message": "Отсутствуют обязательные поля: name, surname, passport",
+                                            "errorCode": "MISSING_REQUIRED_FIELDS"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1258,6 +1347,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "clientExists": {
+                                        "summary": "Клиент уже существует",
+                                        "value": {
+                                            "message": "Клиент с таким паспортом уже зарегистрирован",
+                                            "errorCode": "CLIENT_ALREADY_EXISTS"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1268,6 +1366,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1278,6 +1385,22 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1300,11 +1423,24 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Информация о клиенте успешно получена",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Client"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "summary": "Информация о клиенте",
+                                        "value": {
+                                            "id": 789,
+                                            "name": "Иван",
+                                            "surname": "Иванов",
+                                            "patronymic": "Иванович",
+                                            "passport": "4510123456",
+                                            "phoneNumber": "+7(495)123-45-67"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1315,6 +1451,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidID": {
+                                        "summary": "Некорректный идентификатор клиента",
+                                        "value": {
+                                            "message": "Идентификатор клиента должен быть положительным числом",
+                                            "errorCode": "INVALID_CLIENT_ID"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1325,6 +1470,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "notFound": {
+                                        "summary": "Клиент не существует",
+                                        "value": {
+                                            "message": "Клиент с указанным ID не найден",
+                                            "errorCode": "CLIENT_NOT_FOUND"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1335,6 +1489,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1345,6 +1508,22 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
                                 }
                             }
                         }
