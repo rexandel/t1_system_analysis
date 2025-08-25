@@ -3,7 +3,7 @@
     "info": {
         "title": "Бронирование отелей",
         "description": "Бронирование отелей, глэмпингов и аппартаментов",
-        "version": "1.4.2"
+        "version": "1.4.3"
     },
     "servers": [
         {
@@ -157,7 +157,8 @@
                         103,
                         206,
                         204,
-                        202
+                        202,
+                        615
                     ]
                 }
             },
@@ -249,7 +250,7 @@
                 "example": {
                     "id": 1521,
                     "roomID": 615,
-                    "clientID": 412,
+                    "clientID": 362,
                     "dateTime": "2025-01-15T14:00:00Z"
                 }
             },
@@ -777,7 +778,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Список бронирований успешно получен",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -795,6 +796,22 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidLimit": {
+                                        "summary": "Некорректное значение limit",
+                                        "value": {
+                                            "message": "Параметр 'limit' должен быть числом от 10 до 100",
+                                            "errorCode": "INVALID_LIMIT_PARAMETER"
+                                        }
+                                    },
+                                    "invalidOffset": {
+                                        "summary": "Некорректное значение offset",
+                                        "value": {
+                                            "message": "Параметр 'offset' должен быть неотрицательным числом",
+                                            "errorCode": "INVALID_OFFSET_PARAMETER"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -805,6 +822,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -815,6 +841,22 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -834,6 +876,16 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/Order"
+                            },
+                            "examples": {
+                                "newOrder": {
+                                    "summary": "Создание бронирования",
+                                    "value": {
+                                        "roomID": 615,
+                                        "clientID": 362,
+                                        "dateTime": "2025-01-15T14:00:00Z"
+                                    }
+                                }
                             }
                         }
                     }
@@ -845,6 +897,17 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Order"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "summary": "Бронирование создано",
+                                        "value": {
+                                            "id": 1521,
+                                            "roomID": 615,
+                                            "clientID": 362,
+                                            "dateTime": "2025-01-15T14:00:00Z"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -855,6 +918,22 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidDateTime": {
+                                        "summary": "Некорректная дата бронирования",
+                                        "value": {
+                                            "message": "Дата бронирования должна быть в будущем",
+                                            "errorCode": "INVALID_DATETIME"
+                                        }
+                                    },
+                                    "missingFields": {
+                                        "summary": "Отсутствуют обязательные поля",
+                                        "value": {
+                                            "message": "Отсутствуют обязательные поля: roomID, clientID",
+                                            "errorCode": "MISSING_REQUIRED_FIELDS"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -865,6 +944,22 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "roomNotFound": {
+                                        "summary": "Номер не найден",
+                                        "value": {
+                                            "message": "Указанный номер не существует",
+                                            "errorCode": "ROOM_NOT_FOUND"
+                                        }
+                                    },
+                                    "clientNotFound": {
+                                        "summary": "Клиент не найден",
+                                        "value": {
+                                            "message": "Указанный клиент не существует",
+                                            "errorCode": "CLIENT_NOT_FOUND"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -875,6 +970,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "roomAlreadyBooked": {
+                                        "summary": "Номер уже занят",
+                                        "value": {
+                                            "message": "Номер уже забронирован на указанные даты",
+                                            "errorCode": "ROOM_ALREADY_BOOKED"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -885,6 +989,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -895,6 +1008,22 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -917,11 +1046,22 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Информация о бронировании успешно получена",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Order"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "summary": "Информация о бронировании",
+                                        "value": {
+                                            "id": 1521,
+                                            "roomID": 615,
+                                            "clientID": 362,
+                                            "dateTime": "2025-01-15T14:00:00Z"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -932,6 +1072,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidID": {
+                                        "summary": "Некорректный идентификатор бронирования",
+                                        "value": {
+                                            "message": "Идентификатор бронирования должен быть положительным числом",
+                                            "errorCode": "INVALID_ORDER_ID"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -942,6 +1091,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "notFound": {
+                                        "summary": "Бронирование не существует",
+                                        "value": {
+                                            "message": "Запись о бронировании с указанным ID не найдена",
+                                            "errorCode": "ORDER_NOT_FOUND"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -952,6 +1110,15 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -962,6 +1129,22 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
                                 }
                             }
                         }
