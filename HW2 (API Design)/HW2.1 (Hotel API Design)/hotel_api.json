@@ -393,6 +393,9 @@
                     },
                     {
                         "$ref": "#/components/parameters/hotelIDInQuery"
+                    },
+                    {
+                        "$ref": "#/components/parameters/clientDInQuery"
                     }
                 ],
                 "summary": "Получить список номеров",
@@ -462,6 +465,9 @@
                     },
                     {
                         "$ref": "#/components/parameters/hotelIDInQuery"
+                    },
+                    {
+                        "$ref": "#/components/parameters/clientDInQuery"
                     }
                 ],
                 "summary": "Получить список бронирований",
