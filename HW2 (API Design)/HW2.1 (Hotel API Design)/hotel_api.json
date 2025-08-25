@@ -3,7 +3,7 @@
     "info": {
         "title": "Бронирование отелей",
         "description": "Бронирование отелей, глэмпингов и аппартаментов",
-        "version": "1.0"
+        "version": "1.1"
     },
     "servers": [
         {
@@ -78,6 +78,29 @@
             "orderIDInQuery": {
                 "name": "orderID",
                 "description": "Идентификатор выбранного бронирования номера",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 1
+                }
+            },
+            "clientIDInPath": {
+                "name": "clientID",
+                "description": "Идентификатор выбранного клиента",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 1,
+                    "default": 1
+                }
+            },
+            "clientDInQuery": {
+                "name": "clientID",
+                "description": "Идентификатор выбранного клиента",
                 "in": "query",
                 "required": false,
                 "schema": {
@@ -509,6 +532,92 @@
                                     "type": "array",
                                     "items": {
                                         "$ref": "#/components/schemas/Order"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clients": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/offsetParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/limitParam"
+                    }
+                ],
+                "summary": "Получить список клиентов",
+                "description": "Возвращает полный список всех клиентов",
+                "operationId": "getClients",
+                "tags": [
+                    "Просмотр информации о всех клиентах"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Client"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Создать клиента",
+                "description": "Создать запись о клиенте",
+                "tags": [
+                    "Создание клиента"
+                ],
+                "operationId": "createClient",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Client"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/clients/{clientID}": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/clientIDInPath"
+                    }
+                ],
+                "summary": "Получить информацию об определенном клиенте",
+                "description": "Возвращает полную информацию о конкретном клиенте по его уникальному идентификатору",
+                "operationId": "getClientByID",
+                "tags": [
+                    "Просмотр информации по выбранному клиенту"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Client"
                                     }
                                 }
                             }
