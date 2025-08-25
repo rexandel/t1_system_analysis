@@ -3,7 +3,7 @@
     "info": {
         "title": "Бронирование отелей",
         "description": "Бронирование отелей, глэмпингов и аппартаментов",
-        "version": "1.2"
+        "version": "1.3"
     },
     "servers": [
         {
@@ -147,7 +147,8 @@
                 "required": [
                     "id",
                     "name",
-                    "isAvailable"
+                    "isAvailable",
+                    "hotelID"
                 ],
                 "properties": {
                     "id": {
@@ -174,6 +175,13 @@
                     "isAvailable": {
                         "type": "boolean",
                         "description": "Статус выбранного номера"
+                    },
+                    "hotelID": {
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 1,
+                        "default": 1,
+                        "description": "Идентификатор отеля"
                     }
                 }
             },
@@ -181,7 +189,6 @@
                 "type": "object",
                 "required": [
                     "id",
-                    "hotelID",
                     "roomID",
                     "clientID",
                     "dateTime"
@@ -193,13 +200,6 @@
                         "minimum": 1,
                         "default": 1,
                         "description": "Идентификатор записи о бронировании номера в отеле"
-                    },
-                    "hotelID": {
-                        "type": "integer",
-                        "format": "int64",
-                        "minimum": 1,
-                        "default": 1,
-                        "description": "Идентификатор отеля"
                     },
                     "roomID": {
                         "type": "integer",
