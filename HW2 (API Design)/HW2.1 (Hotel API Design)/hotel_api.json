@@ -3,7 +3,7 @@
     "info": {
         "title": "Бронирование отелей",
         "description": "Бронирование отелей, глэмпингов и аппартаментов",
-        "version": "1.4.4"
+        "version": "1.5"
     },
     "servers": [
         {
@@ -434,6 +434,150 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "summary": "Создать отель",
+                "description": "Создать запись об отеле",
+                "tags": [
+                    "Управление отелями"
+                ],
+                "operationId": "createHotel",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Hotel"
+                            },
+                            "examples": {
+                                "newHotel": {
+                                    "summary": "Создание отеля",
+                                    "value": {
+                                        "name": "Отель 'Премиум'",
+                                        "image": "https://example.com/images/new-hotel.jpg",
+                                        "description": "Современный отель премиум-класса с видом на город",
+                                        "feedback": "Совпадает с ожиданием"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Отель успешно создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Hotel"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "summary": "Отель создан",
+                                        "value": {
+                                            "id": 100,
+                                            "name": "Отель 'Премиум'",
+                                            "image": "https://example.com/images/new-hotel.jpg",
+                                            "description": "Современный отель премиум-класса с видом на город",
+                                            "feedback": "Совпадает с ожиданием",
+                                            "rooms": []
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректные параметры запроса",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidDescription": {
+                                        "summary": "Некорректное описание",
+                                        "value": {
+                                            "message": "Описание отеля должно содержать от 100 до 1000 символов",
+                                            "errorCode": "INVALID_DESCRIPTION_LENGTH"
+                                        }
+                                    },
+                                    "missingFields": {
+                                        "summary": "Отсутствуют обязательные поля",
+                                        "value": {
+                                            "message": "Отсутствуют обязательные поля: name, image, description, feedback",
+                                            "errorCode": "MISSING_REQUIRED_FIELDS"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Конфликт",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "hotelExists": {
+                                        "summary": "Отель уже существует",
+                                        "value": {
+                                            "message": "Отель с таким названием уже существует",
+                                            "errorCode": "HOTEL_ALREADY_EXISTS"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Сервис временно недоступен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегрушен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/hotels/{hotelID}": {
@@ -604,6 +748,166 @@
                     },
                     "500": {
                         "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Сервис временно недоступен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Создать номер",
+                "description": "Создать запись о номере в отеле",
+                "tags": [
+                    "Управление номерами"
+                ],
+                "operationId": "createRoom",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Room"
+                            },
+                            "examples": {
+                                "newRoom": {
+                                    "summary": "Создание номера",
+                                    "value": {
+                                        "name": "Люкс Премиум",
+                                        "isAvailable": true,
+                                        "hotelID": 456
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Номер успешно создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Room"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "summary": "Номер создан",
+                                        "value": {
+                                            "id": 200,
+                                            "name": "Люкс Премиум",
+                                            "isAvailable": true,
+                                            "hotelID": 456
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректные параметры запроса",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidHotelID": {
+                                        "summary": "Некорректный идентификатор отеля",
+                                        "value": {
+                                            "message": "Идентификатор отеля должен быть положительным числом",
+                                            "errorCode": "INVALID_HOTEL_ID"
+                                        }
+                                    },
+                                    "missingFields": {
+                                        "summary": "Отсутствуют обязательные поля",
+                                        "value": {
+                                            "message": "Отсутствуют обязательные поля: name, isAvailable, hotelID",
+                                            "errorCode": "MISSING_REQUIRED_FIELDS"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Связанный ресурс не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "hotelNotFound": {
+                                        "summary": "Отель не найден",
+                                        "value": {
+                                            "message": "Указанный отель не существует",
+                                            "errorCode": "HOTEL_NOT_FOUND"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Конфликт",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "roomExists": {
+                                        "summary": "Номер уже существует",
+                                        "value": {
+                                            "message": "Номер с таким названием уже существует в этом отеле",
+                                            "errorCode": "ROOM_ALREADY_EXISTS"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренная ошибка сервера",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1259,7 +1563,7 @@
                 "summary": "Создать клиента",
                 "description": "Создать запись о клиенте",
                 "tags": [
-                    "Создание клиента"
+                    "Управление клиентами"
                 ],
                 "operationId": "createClient",
                 "requestBody": {
