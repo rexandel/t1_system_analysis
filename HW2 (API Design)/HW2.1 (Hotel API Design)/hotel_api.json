@@ -3,7 +3,7 @@
     "info": {
         "title": "Бронирование отелей",
         "description": "Бронирование отелей, глэмпингов и аппартаментов",
-        "version": "1.5"
+        "version": "2.0"
     },
     "servers": [
         {
@@ -97,7 +97,6 @@
             "Hotel": {
                 "type": "object",
                 "required": [
-                    "id",
                     "name",
                     "image",
                     "description",
@@ -165,7 +164,6 @@
             "Room": {
                 "type": "object",
                 "required": [
-                    "id",
                     "name",
                     "isAvailable",
                     "hotelID"
@@ -214,7 +212,6 @@
             "Order": {
                 "type": "object",
                 "required": [
-                    "id",
                     "roomID",
                     "clientID",
                     "dateTime"
@@ -257,7 +254,6 @@
             "Client": {
                 "type": "object",
                 "required": [
-                    "id",
                     "name",
                     "surname",
                     "patronymic",
@@ -688,6 +684,241 @@
                         }
                     }
                 }
+            },
+            "put": {
+                "summary": "Обновить информацию об отеле",
+                "description": "Обновляет информацию об отеле по его идентификатору",
+                "operationId": "updateHotel",
+                "tags": [
+                    "Управление отелями"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/hotelID"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Hotel"
+                            },
+                            "examples": {
+                                "updateHotel": {
+                                    "summary": "Обновление отеля",
+                                    "value": {
+                                        "name": "Отель 'Премиум'",
+                                        "image": "https://example.com/images/updated-hotel.jpg",
+                                        "description": "Современный отель премиум-класса с видом на город - полностью обновлен в 2025 году",
+                                        "feedback": "Выше ожидаемого"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Информация об отеле успешно обновлена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Hotel"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "summary": "Отель обновлен",
+                                        "value": {
+                                            "id": 100,
+                                            "name": "Отель 'Премиум'",
+                                            "image": "https://example.com/images/updated-hotel.jpg",
+                                            "description": "Современный отель премиум-класса с видом на город - полностью обновлен в 2025 году",
+                                            "feedback": "Выше ожидаемого",
+                                            "rooms": [
+                                                101,
+                                                102,
+                                                103
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректные параметры запроса",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidDescription": {
+                                        "summary": "Некорректное описание",
+                                        "value": {
+                                            "message": "Описание отеля должно содержать от 100 до 1000 символов",
+                                            "errorCode": "INVALID_DESCRIPTION_LENGTH"
+                                        }
+                                    },
+                                    "missingFields": {
+                                        "summary": "Отсутствуют обязательные поля",
+                                        "value": {
+                                            "message": "Отсутствуют обязательные поля: name, image, description, feedback",
+                                            "errorCode": "MISSING_REQUIRED_FIELDS"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Отель с указанным ID не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "notFound": {
+                                        "summary": "Отель не существует",
+                                        "value": {
+                                            "message": "Отель с указанным ID не найден",
+                                            "errorCode": "HOTEL_NOT_FOUND"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Сервис временно недоступен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Удалить отель",
+                "description": "Удаляет отель по его идентификатору",
+                "operationId": "deleteHotel",
+                "tags": [
+                    "Управление отелями"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/hotelID"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Отель успешно удален"
+                    },
+                    "404": {
+                        "description": "Отель с указанным ID не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "notFound": {
+                                        "summary": "Отель не существует",
+                                        "value": {
+                                            "message": "Отель с указанным ID не найден",
+                                            "errorCode": "HOTEL_NOT_FOUND"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Сервис временно недоступен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/rooms": {
@@ -850,6 +1081,13 @@
                                     "$ref": "#/components/schemas/Error"
                                 },
                                 "examples": {
+                                    "invalidName": {
+                                        "summary": "Некорректное наименование",
+                                        "value": {
+                                            "message": "Наименование номера не может быть пустым",
+                                            "errorCode": "INVALID_ROOM_NAME"
+                                        }
+                                    },
                                     "invalidHotelID": {
                                         "summary": "Некорректный идентификатор отеля",
                                         "value": {
@@ -996,6 +1234,242 @@
                                 }
                             }
                         }
+                    },
+                    "404": {
+                        "description": "Номер с указанным ID не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "notFound": {
+                                        "summary": "Номер не существует",
+                                        "value": {
+                                            "message": "Номер с указанным ID не найден",
+                                            "errorCode": "ROOM_NOT_FOUND"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Сервис временно недоступен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Обновить информацию о номере",
+                "description": "Обновляет информацию о номере по его идентификатору",
+                "operationId": "updateRoom",
+                "tags": [
+                    "Управление номерами"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/roomID"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Room"
+                            },
+                            "examples": {
+                                "updateRoom": {
+                                    "summary": "Обновление номера",
+                                    "value": {
+                                        "id": 615,
+                                        "name": "Улучшенный люкс с видом на собор",
+                                        "isAvailable": true,
+                                        "hotelID": 412
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Информация о номере успешно обновлена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Room"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "summary": "Номер обновлен",
+                                        "value": {
+                                            "id": 615,
+                                            "name": "Улучшенный люкс с видом на собор",
+                                            "isAvailable": true,
+                                            "hotelID": 412
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректные параметры запроса",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidName": {
+                                        "summary": "Некорректное наименование",
+                                        "value": {
+                                            "message": "Наименование номера не может быть пустым",
+                                            "errorCode": "INVALID_ROOM_NAME"
+                                        }
+                                    },
+                                    "invalidHotelID": {
+                                        "summary": "Некорректный идентификатор отеля",
+                                        "value": {
+                                            "message": "Идентификатор отеля должен быть положительным числом",
+                                            "errorCode": "INVALID_HOTEL_ID"
+                                        }
+                                    },
+                                    "missingFields": {
+                                        "summary": "Отсутствуют обязательные поля",
+                                        "value": {
+                                            "message": "Отсутствуют обязательные поля: id, name, isAvailable, hotelID",
+                                            "errorCode": "MISSING_REQUIRED_FIELDS"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Номер с указанным ID не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "notFound": {
+                                        "summary": "Номер не существует",
+                                        "value": {
+                                            "message": "Номер с указанным ID не найден",
+                                            "errorCode": "ROOM_NOT_FOUND"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Сервис временно недоступен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Удалить номер",
+                "description": "Удаляет номер по его идентификатору",
+                "operationId": "deleteRoom",
+                "tags": [
+                    "Управление номерами"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/roomID"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Номер успешно удален"
                     },
                     "404": {
                         "description": "Номер с указанным ID не найден",
@@ -1224,6 +1698,20 @@
                                     "$ref": "#/components/schemas/Error"
                                 },
                                 "examples": {
+                                    "invalidClientID": {
+                                        "summary": "Некорректный идентификатор клиента",
+                                        "value": {
+                                            "message": "Идентификатор клиента должен быть положительным числом",
+                                            "errorCode": "INVALID_CLIENT_ID"
+                                        }
+                                    },
+                                    "invalidRoomID": {
+                                        "summary": "Некорректный идентификатор номера",
+                                        "value": {
+                                            "message": "Идентификатор номера должен быть положительным числом",
+                                            "errorCode": "INVALID_ROOM_ID"
+                                        }
+                                    },
                                     "invalidDateTime": {
                                         "summary": "Некорректная дата бронирования",
                                         "value": {
@@ -1401,6 +1889,288 @@
                                         "summary": "Бронирование не существует",
                                         "value": {
                                             "message": "Запись о бронировании с указанным ID не найдена",
+                                            "errorCode": "ORDER_NOT_FOUND"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Сервис временно недоступен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Обновить информацию о бронировании",
+                "description": "Обновляет информацию о существующем бронировании по его идентификатору",
+                "operationId": "updateOrder",
+                "tags": [
+                    "Управление бронированиями"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/orderID"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Order"
+                            },
+                            "examples": {
+                                "updateOrder": {
+                                    "summary": "Обновление бронирования",
+                                    "value": {
+                                        "roomID": 616,
+                                        "clientID": 362,
+                                        "dateTime": "2025-01-16T14:00:00Z"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Информация о бронировании успешно обновлена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Order"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "summary": "Бронирование обновлено",
+                                        "value": {
+                                            "id": 1521,
+                                            "roomID": 616,
+                                            "clientID": 362,
+                                            "dateTime": "2025-01-16T14:00:00Z"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректные параметры запроса",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidClientID": {
+                                        "summary": "Некорректный идентификатор клиента",
+                                        "value": {
+                                            "message": "Идентификатор клиента должен быть положительным числом",
+                                            "errorCode": "INVALID_CLIENT_ID"
+                                        }
+                                    },
+                                    "invalidRoomID": {
+                                        "summary": "Некорректный идентификатор номера",
+                                        "value": {
+                                            "message": "Идентификатор номера должен быть положительным числом",
+                                            "errorCode": "INVALID_ROOM_ID"
+                                        }
+                                    },
+                                    "invalidDateTime": {
+                                        "summary": "Некорректная дата и время",
+                                        "value": {
+                                            "message": "Дата и время должны быть в формате ISO 8601 и не могут быть в прошлом",
+                                            "errorCode": "INVALID_DATETIME_FORMAT"
+                                        }
+                                    },
+                                    "missingFields": {
+                                        "summary": "Отсутствуют обязательные поля",
+                                        "value": {
+                                            "message": "Отсутствуют обязательные поля: roomID, clientID, dateTime",
+                                            "errorCode": "MISSING_REQUIRED_FIELDS"
+                                        }
+                                    },
+                                    "roomNotAvailable": {
+                                        "summary": "Номер недоступен",
+                                        "value": {
+                                            "message": "Указанный номер уже забронирован на выбранную дату",
+                                            "errorCode": "ROOM_ALREADY_BOOKED"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ресурс не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "orderNotFound": {
+                                        "summary": "Бронирование не найдено",
+                                        "value": {
+                                            "message": "Бронирование с указанным ID не найдено",
+                                            "errorCode": "ORDER_NOT_FOUND"
+                                        }
+                                    },
+                                    "roomNotFound": {
+                                        "summary": "Номер не найден",
+                                        "value": {
+                                            "message": "Номер с указанным ID не найден",
+                                            "errorCode": "ROOM_NOT_FOUND"
+                                        }
+                                    },
+                                    "clientNotFound": {
+                                        "summary": "Клиент не найден",
+                                        "value": {
+                                            "message": "Клиент с указанным ID не найден",
+                                            "errorCode": "CLIENT_NOT_FOUND"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Сервис временно недоступен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Удалить бронирование",
+                "description": "Удаляет запись о бронировании по его идентификатору",
+                "operationId": "deleteOrder",
+                "tags": [
+                    "Управление бронированиями"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/orderID"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Бронирование успешно удалено"
+                    },
+                    "400": {
+                        "description": "Некорректные параметры запроса",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidID": {
+                                        "summary": "Некорректный идентификатор бронирования",
+                                        "value": {
+                                            "message": "Идентификатор бронирования должен быть положительным числом",
+                                            "errorCode": "INVALID_ORDER_ID"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Бронирование с указанным ID не найдено",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "notFound": {
+                                        "summary": "Бронирование не существует",
+                                        "value": {
+                                            "message": "Бронирование с указанным ID не найдено",
                                             "errorCode": "ORDER_NOT_FOUND"
                                         }
                                     }
@@ -1770,6 +2540,278 @@
                     },
                     "404": {
                         "description": "Клиент с таким ID не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "notFound": {
+                                        "summary": "Клиент не существует",
+                                        "value": {
+                                            "message": "Клиент с указанным ID не найден",
+                                            "errorCode": "CLIENT_NOT_FOUND"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Сервис временно недоступен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Обновить информацию о клиенте",
+                "description": "Обновляет информацию о существующем клиенте по его идентификатору",
+                "operationId": "updateClient",
+                "tags": [
+                    "Управление клиентами"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/clientID"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Client"
+                            },
+                            "examples": {
+                                "updateClient": {
+                                    "summary": "Обновление клиента",
+                                    "value": {
+                                        "name": "Иван",
+                                        "surname": "Иванов",
+                                        "patronymic": "Сергеевич",
+                                        "passport": "4510123456",
+                                        "phoneNumber": "+7(495)555-44-33"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Информация о клиенте успешно обновлена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Client"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "summary": "Клиент обновлен",
+                                        "value": {
+                                            "id": 789,
+                                            "name": "Иван",
+                                            "surname": "Иванов",
+                                            "patronymic": "Сергеевич",
+                                            "passport": "4510123456",
+                                            "phoneNumber": "+7(495)555-44-33"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректные параметры запроса",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidPassport": {
+                                        "summary": "Некорректный паспорт",
+                                        "value": {
+                                            "message": "Паспорт должен состоять из 10 цифр",
+                                            "errorCode": "INVALID_PASSPORT_FORMAT"
+                                        }
+                                    },
+                                    "invalidPhone": {
+                                        "summary": "Некорректный телефон",
+                                        "value": {
+                                            "message": "Телефон должен быть в формате +7(XXX)XXX-XX-XX",
+                                            "errorCode": "INVALID_PHONE_FORMAT"
+                                        }
+                                    },
+                                    "missingFields": {
+                                        "summary": "Отсутствуют обязательные поля",
+                                        "value": {
+                                            "message": "Отсутствуют обязательные поля: name, surname, patronymic, passport, phoneNumber",
+                                            "errorCode": "MISSING_REQUIRED_FIELDS"
+                                        }
+                                    },
+                                    "passportExists": {
+                                        "summary": "Паспорт уже существует",
+                                        "value": {
+                                            "message": "Другой клиент с таким номером паспорта уже зарегистрирован",
+                                            "errorCode": "PASSPORT_ALREADY_EXISTS"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Клиент с указанным ID не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "notFound": {
+                                        "summary": "Клиент не существует",
+                                        "value": {
+                                            "message": "Клиент с указанным ID не найден",
+                                            "errorCode": "CLIENT_NOT_FOUND"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "databaseError": {
+                                        "summary": "Ошибка базы данных",
+                                        "value": {
+                                            "message": "Внутренняя ошибка сервера",
+                                            "errorCode": "DATABASE_CONNECTION_ERROR"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Сервис временно недоступен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "maintenance": {
+                                        "summary": "Техническое обслуживание",
+                                        "value": {
+                                            "message": "Сервис временно недоступен. Ведутся технические работы",
+                                            "errorCode": "SERVICE_MAINTENANCE"
+                                        }
+                                    },
+                                    "overload": {
+                                        "summary": "Перегрузка сервера",
+                                        "value": {
+                                            "message": "Сервис временно перегружен. Попробуйте повторить запрос позже",
+                                            "errorCode": "SERVICE_OVERLOAD"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Удалить клиента",
+                "description": "Удаляет запись о клиенте по его идентификатору",
+                "operationId": "deleteClient",
+                "tags": [
+                    "Управление клиентами"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/clientID"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Клиент успешно удален"
+                    },
+                    "400": {
+                        "description": "Некорректные параметры запроса",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "invalidID": {
+                                        "summary": "Некорректный идентификатор клиента",
+                                        "value": {
+                                            "message": "Идентификатор клиента должен быть положительным числом",
+                                            "errorCode": "INVALID_CLIENT_ID"
+                                        }
+                                    },
+                                    "hasActiveOrders": {
+                                        "summary": "Есть активные бронирования",
+                                        "value": {
+                                            "message": "Невозможно удалить клиента с активными бронированиями",
+                                            "errorCode": "CLIENT_HAS_ACTIVE_ORDERS"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Клиент с указанным ID не найден",
                         "content": {
                             "application/json": {
                                 "schema": {
