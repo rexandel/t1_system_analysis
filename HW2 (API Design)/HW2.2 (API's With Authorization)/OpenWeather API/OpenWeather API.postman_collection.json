@@ -1,0 +1,245 @@
+{
+	"info": {
+		"_postman_id": "d5fa966c-9ca9-4098-9876-f0deab1ad9fa",
+		"name": "OpenWeather API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47919358",
+		"_collection_link": "https://alexander-sidorenko-s-team.postman.co/workspace/0535557b-68e3-49fb-88bf-251ff57aca0d/collection/47919358-d5fa966c-9ca9-4098-9876-f0deab1ad9fa?action=share&source=collection_link&creator=47919358"
+	},
+	"item": [
+		{
+			"name": "Moscow",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "appid",
+							"type": "string"
+						},
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.openweathermap.org/data/2.5/weather?q=Moscow&units=metric&lang=ru",
+					"protocol": "https",
+					"host": [
+						"api",
+						"openweathermap",
+						"org"
+					],
+					"path": [
+						"data",
+						"2.5",
+						"weather"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "Moscow"
+						},
+						{
+							"key": "units",
+							"value": "metric"
+						},
+						{
+							"key": "lang",
+							"value": "ru"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Krasnodar",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "appid",
+							"type": "string"
+						},
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.openweathermap.org/data/2.5/weather?q=Krasnodar&units=metric&lang=ru",
+					"protocol": "https",
+					"host": [
+						"api",
+						"openweathermap",
+						"org"
+					],
+					"path": [
+						"data",
+						"2.5",
+						"weather"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "Krasnodar"
+						},
+						{
+							"key": "units",
+							"value": "metric"
+						},
+						{
+							"key": "lang",
+							"value": "ru"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Saint Petersburg",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "appid",
+							"type": "string"
+						},
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.openweathermap.org/data/2.5/weather?q=Saint Petersburg&units=metric&lang=ru",
+					"protocol": "https",
+					"host": [
+						"api",
+						"openweathermap",
+						"org"
+					],
+					"path": [
+						"data",
+						"2.5",
+						"weather"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "Saint Petersburg"
+						},
+						{
+							"key": "units",
+							"value": "metric"
+						},
+						{
+							"key": "lang",
+							"value": "ru"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "in",
+				"value": "query",
+				"type": "string"
+			},
+			{
+				"key": "value",
+				"value": "{{appid}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "appid",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "appid",
+			"value": ""
+		}
+	]
+}
