@@ -1,0 +1,65 @@
+@startuml
+!theme bluegray
+title Диаграмма последовательности: GET /materials/{materialID}/timestamps
+
+actor Клиент
+participant "API Gateway" as API
+participant "Auth Service" as Auth
+participant "Database" as DB
+participant "Audit Service" as Audit
+
+Клиент -> API: GET /materials/{materialID}/timestamps
+note right: Headers: Authorization, Request-ID, Accept\nQuery: language (опционально)
+
+group Валидация запроса
+    API -> API: Проверка path параметров и заголовков
+    
+    alt Невалидный materialID (число ≤ 0)
+        API --> Клиент: 400 INVALID_MATERIAL_ID
+    else Отсутствует Authorization или Request-ID
+        API --> Клиент: 401 AUTH_TOKEN_REQUIRED
+    else Accept ≠ application/json
+        API --> Клиент: 400 INVALID_ACCEPT_HEADER
+    else language передан и не соответствует ISO 639
+        API --> Клиент: 400 INVALID_LANGUAGE_CODE
+    else Все проверки пройдены
+        API -> Auth: Проверка Bearer Token
+    end
+end
+
+group Аутентификация
+    alt Невалидный/просроченный токен
+        Auth --> API: Ошибка авторизации
+        API --> Клиент: 401 INVALID_AUTH_TOKEN
+    else Токен валиден
+        API -> DB: Запрос данных материала\nSELECT + проверка прав доступа
+    end
+end
+
+group Проверка прав доступа и данных
+    alt Материал не найден
+        DB --> API: MATERIAL_NOT_FOUND
+        API --> Клиент: 404 MATERIAL_NOT_FOUND
+    else Пользователь не имеет доступа к курсу
+        DB --> API: ACCESS_DENIED
+        API --> Клиент: 403 ACCESS_DENIED
+    else Данные получены успешно
+        DB --> API: Данные материала (file_type, meta)
+        API -> API: Проверка типа файла и таймкодов
+    end
+end
+
+group Проверка типа файла и таймкодов
+    alt file_type != "video"
+        API --> Клиент: 409 NOT_VIDEO_FILE
+    else Нет ключа timestamps в meta
+        API --> Клиент: 422 NO_TIMESTAMPS_AVAILABLE
+    else language передан, но не поддерживается
+        API --> Клиент: 422 LANGUAGE_NOT_SUPPORTED
+    else Все проверки пройдены
+        API -> API: Извлечение таймкодов для языка
+        API -> Audit: Аудит запроса\nrequestId, materialID, timestamp,\nstatus_code, accept_header, requested_language
+        API --> Клиент: 200 OK\nJSON с language и timestamps
+    end
+end
+@enduml
