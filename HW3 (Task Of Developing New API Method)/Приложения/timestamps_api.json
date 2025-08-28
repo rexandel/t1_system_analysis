@@ -1,0 +1,416 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Materials Timestamps API",
+    "description": "API для получения структурированных таймкодов видео-материалов",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support",
+      "email": "support@debut.t1-academy.ru"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://debut.t1-academy.ru",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/api/v1/materials/{materialID}/timestamps": {
+      "get": {
+        "summary": "Получение структурированных таймкодов видео-материала",
+        "description": "Возвращает таймкоды (разметку) видео-материала на указанном языке",
+        "tags": ["Получение таймкодов"],
+        "operationId": "getMaterialTimestamps",
+        "parameters": [
+          {
+            "name": "materialID",
+            "in": "path",
+            "required": true,
+            "description": "ID видео-материала",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "example": 7422
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "required": false,
+            "description": "Язык заголовков таймкодов (по умолчанию ru)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z]{2}$",
+              "example": "en",
+              "default": "ru"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешный ответ с таймкодами",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimestampsResponse"
+                },
+                "example": {
+                  "materialID": 7422,
+                  "language": "ru",
+                  "timestamps": [
+                    {
+                      "start": "00:00:00",
+                      "end": "00:00:30",
+                      "title": "Введение - кто такой системный аналитик?"
+                    },
+                    {
+                      "start": "00:00:30",
+                      "end": "00:01:45",
+                      "title": "Основные обязанности системного аналитика"
+                    },
+                    {
+                      "start": "00:01:45",
+                      "end": "00:04:00",
+                      "title": "Заключение и рекомендации для начинающих"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Неверный запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "invalidMaterialId": {
+                    "value": {
+                      "error": "Bad Request",
+                      "error_code": "INVALID_MATERIAL_ID",
+                      "message": "Неверный формат ID материала. Ожидается числовое значение."
+                    }
+                  },
+                  "invalidLanguage": {
+                    "value": {
+                      "error": "Bad Request",
+                      "error_code": "INVALID_LANGUAGE_CODE",
+                      "message": "Неверный формат кода языка. Используйте стандарт ISO 639."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ошибка авторизации",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "authRequired": {
+                    "value": {
+                      "error": "Unauthorized",
+                      "error_code": "AUTH_TOKEN_REQUIRED",
+                      "message": "Токен авторизации отсутствует в заголовке Authorization."
+                    }
+                  },
+                  "invalidToken": {
+                    "value": {
+                      "error": "Unauthorized",
+                      "error_code": "INVALID_AUTH_TOKEN",
+                      "message": "Невалидный или просроченный токен авторизации."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Доступ запрещен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Forbidden",
+                  "error_code": "ACCESS_DENIED",
+                  "message": "У вас нет прав на доступ к запрошенному материалу."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Материал не найден",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Not Found",
+                  "error_code": "MATERIAL_NOT_FOUND",
+                  "message": "Материал с указанным ID не найден."
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт - не видео файл",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Conflict",
+                  "error_code": "NOT_VIDEO_FILE",
+                  "message": "Запрошенный материал не является видеофайлом."
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Ошибка обработки",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "noTimestamps": {
+                    "value": {
+                      "error": "Unprocessable Entity",
+                      "error_code": "NO_TIMESTAMPS_AVAILABLE",
+                      "message": "Для данного видеофайла таймкоды не найдены."
+                    }
+                  },
+                  "languageNotSupported": {
+                    "value": {
+                      "error": "Unprocessable Entity",
+                      "error_code": "LANGUAGE_NOT_SUPPORTED",
+                      "message": "Таймкоды на запрошенном языке недоступны."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Internal Server Error",
+                  "error_code": "INTERNAL_SERVER_ERROR",
+                  "message": "Внутренняя ошибка сервера. Попробуйте позже."
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Сервис недоступен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Service Unavailable",
+                  "error_code": "SERVICE_UNAVAILABLE",
+                  "message": "Сервер временно недоступен. Попробуйте позже."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-audit": {
+          "enabled": true,
+          "fields": [
+            "requestId",
+            "materialID",
+            "timestamp",
+            "status_code",
+            "accept_header",
+            "requested_language"
+          ]
+        },
+        "x-rate-limit": {
+          "user": 100,
+          "period": "minute"
+        },
+        "x-cache": {
+          "enabled": true,
+          "ttl": 60
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "TimestampsResponse": {
+        "type": "object",
+        "required": [
+          "materialID",
+          "language",
+          "timestamps"
+        ],
+        "properties": {
+          "materialID": {
+            "type": "integer",
+            "description": "ID видео-материала",
+            "example": 7422
+          },
+          "language": {
+            "type": "string",
+            "description": "Язык заголовков таймкодов (ru, en)",
+            "example": "ru"
+          },
+          "timestamps": {
+            "type": "array",
+            "description": "Массив таймкодов",
+            "items": {
+              "$ref": "#/components/schemas/Timestamp"
+            }
+          }
+        }
+      },
+      "Timestamp": {
+        "type": "object",
+        "required": [
+          "start",
+          "end",
+          "title"
+        ],
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "time",
+            "description": "Начало временного отрезка (HH:MM:SS)",
+            "example": "00:00:00"
+          },
+          "end": {
+            "type": "string",
+            "format": "time",
+            "description": "Конец временного отрезка (HH:MM:SS)",
+            "example": "00:00:30"
+          },
+          "title": {
+            "type": "string",
+            "description": "Заголовок таймкода",
+            "example": "Введение - кто такой системный аналитик?"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "error",
+          "error_code",
+          "message"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Тип ошибки",
+            "example": "Bad Request"
+          },
+          "error_code": {
+            "type": "string",
+            "description": "Код ошибки",
+            "example": "INVALID_MATERIAL_ID"
+          },
+          "message": {
+            "type": "string",
+            "description": "Описание ошибки",
+            "example": "Неверный формат ID материала. Ожидается числовое значение."
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Токен доступа в формате Bearer Token"
+      }
+    },
+    "headers": {
+      "Request-ID": {
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "required": true,
+        "description": "Идентификатор запроса (для аудита)",
+        "example": "7b9c2a8d-4e1f-4b3c-9a7d-2e8b6f1a4c3d"
+      },
+      "Authorization": {
+        "schema": {
+          "type": "string"
+        },
+        "required": true,
+        "description": "Токен доступа в формате Bearer Token",
+        "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      },
+      "Accept": {
+        "schema": {
+          "type": "string",
+          "enum": [
+            "application/json"
+          ]
+        },
+        "required": true,
+        "description": "Ожидаемый MIME-тип ответа от сервера",
+        "example": "application/json"
+      }
+    },
+    "parameters": {
+      "MaterialID": {
+        "name": "materialID",
+        "in": "path",
+        "required": true,
+        "description": "ID видео-материала",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "example": 7422
+        }
+      },
+      "Language": {
+        "name": "language",
+        "in": "query",
+        "required": false,
+        "description": "Язык заголовков таймкодов (по умолчанию ru)",
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-z]{2}$",
+          "default": "ru"
+        }
+      }
+    }
+  }
+}
